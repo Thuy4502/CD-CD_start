@@ -6,3 +6,4 @@ COPY ./wp-content /var/www/html/wp-content/themes/
 
 # Chạy lệnh cập nhật và cài đặt gói bổ sung nếu cần
 RUN apt-get update && apt-get install -y curl
+
