@@ -1,3 +1,4 @@
+
 version: '3.8'
 
 services:
@@ -11,8 +12,7 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
-    networks:
-      - wpsite
+
   wordpress:
     depends_on:
       - db
@@ -20,18 +20,14 @@ services:
     ports:
       - "8000:80"
     restart: always
-    volumes: ['./:/var/www/html']
-      # - wordpress_data:/var/www/html
     environment:
       WORDPRESS_DB_HOST: ${DB_HOST}:3306
       WORDPRESS_DB_USER: ${DB_ROOT}
       WORDPRESS_DB_PASSWORD: ${DB_PASS}
       WORDPRESS_DB_NAME: ${DB_NAME}
-    network:
-      - wpsite
-networks:
-  wpsite:
+    volumes:
+      - wordpress_data:/var/www/html
+
 volumes:
-  # db_data:
   db_data: {}
   wordpress_data: {}
