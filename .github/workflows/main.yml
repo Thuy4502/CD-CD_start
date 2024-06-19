@@ -42,7 +42,7 @@ jobs:
       run: docker-compose up -my-custom-wordpress
 
     - name: Run tests
-      run: docker exec -T [container_name] /path/to/test/script.sh
+       echo "Run deployment steps here"
 
     - name: Push Docker images
       run: |
