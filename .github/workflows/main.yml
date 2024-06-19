@@ -1,101 +1,55 @@
-# name: CI for WordPress
+name: CI for WordPress
 
-# on:
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
+jobs:
+  build:
+    runs-on: windows-latest
 
-#     services:
-#       mysql:
-#         image: mysql:5.7
-#         env:
-#           MYSQL_ROOT_PASSWORD: 123456
-#           MYSQL_DATABASE: wordpress
-#           MYSQL_USER: user
-#           MYSQL_PASSWORD: 123456
-#         ports:
-#           - 3306:3306
-#         options: >-
-#           --health-cmd="mysqladmin ping"
-#           --health-interval=10s
-#           --health-timeout=10s
-#           --health-retries=10
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: wordpress
+          MYSQL_USER: user
+          MYSQL_PASSWORD: 123456
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=10s
+          --health-retries=10
 
-#     steps:
-#     - uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-#     - name: Set up Docker Buildx
-#       uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-#     - name: Login to DockerHub
-#       uses: docker/login-action@v1
-#       with:
-#         username: ${{ secrets.DOCKER_USERNAME }}
-#         password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-#     # - name: Build the Docker image
-#     #   run: docker-compose up -my-custom-wordpress
+      - name: Build Docker image
+        run: |
+          docker buildx create --use --name mybuilder
+          docker buildx build --platform windows/amd64 -t ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest . --push
 
-#     - name: Run tests
-#       run: |
-#         echo "Run test steps here"
+      - name: Run tests
+        run: |
+          echo "Run test steps here"
 
-#     - name: Push Docker images
-#       run: |
-#         docker buildx build -t ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
-#         docker push ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
-
-#     - name: Deploy to Production
-#       run: |
-#         echo "Run deployment steps here"
-
-
-
-services:
-  mysql:
-    image: mysql:5.7
-    env:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: user
-      MYSQL_PASSWORD: 123456
-    ports:
-      - 3306:3306
-    options: >-
-      --health-cmd="mysqladmin ping"
-      --health-interval=10s
-      --health-timeout=10s
-      --health-retries=10
-
-steps:
-- uses: actions/checkout@v2
-
-- name: Set up Docker Buildx
-  uses: docker/setup-buildx-action@v1
-
-- name: Login to DockerHub
-  uses: docker/login-action@v1
-  with:
-    username: ${{ secrets.DOCKER_USERNAME }}
-    password: ${{ secrets.DOCKER_PASSWORD }}
-
-# - name: Build the Docker image
-#   run: docker-compose up -my-custom-wordpress
-
-- name: Run tests
-  run: |
-    echo "Run test steps here"
-
-- name: Push Docker images
-  run: |
-    docker buildx build -t ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
-    docker push ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
-
-- name: Deploy to Production
-  run: |
-    echo "Run deployment steps here"
+      - name: Deploy to Production
+        run: |
+          echo "Run deployment steps here"
