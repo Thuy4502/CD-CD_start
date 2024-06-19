@@ -47,7 +47,7 @@ jobs:
 
     - name: Push Docker images
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
+        docker buildx build -t ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
 
     - name: Deploy to Production
