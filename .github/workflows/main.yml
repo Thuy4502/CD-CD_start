@@ -28,6 +28,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
     - name: Build the Docker image
       run: docker-compose up -d
 
@@ -36,14 +46,9 @@ jobs:
 
     - name: Push Docker images
       run: |
-        echo "Run tests placeholder"
-
-    - name: Push Docker images
-      run: |
-       docker login -u ${{secrets.DOCKER_USERNAME }} -p ${{secrets.DOCKER_PASSWORD}}
-       docker push my-custom-wordpress:latest
+        docker tag my-custom-wordpress:latest ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
 
     - name: Deploy to Production
       run: |
-       echo "Run tests placeholder"
-
+        echo "Run deployment steps here"
