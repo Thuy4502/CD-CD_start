@@ -46,10 +46,4 @@ jobs:
           docker buildx create --use --name mybuilder
           docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest . --push
 
-      - name: Run tests
-        run: |
-          echo "Run test steps here"
-
-      - name: Deploy to Production
-        run: |
-          echo "Run deployment steps here"
+  
