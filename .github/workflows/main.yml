@@ -39,7 +39,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build the Docker image
-      run: docker-compose up -d
+      run: docker-compose up -my-custom-wordpress
 
     - name: Run tests
       run: docker exec -T [container_name] /path/to/test/script.sh
