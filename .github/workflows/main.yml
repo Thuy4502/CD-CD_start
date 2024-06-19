@@ -1,0 +1,36 @@
+name: CI for WordPress
+
+on:
+ push: 
+  branches: [ main ]
+ pull_request:
+  braches: [ main ]
+
+
+jobs:
+ build:
+  run-on: ubuntu-latest
+
+  services:
+   mysql:
+    image: mysql:5.7
+    env:
+      MYSQL_ROOT_PASSWORD:123456
+      MYSQL_DATABASE=wordpress
+      MYSQL_USER=user
+      MYSQL_PASSWORD=123456
+    ports:
+    - 3306:3306
+    options: >-
+     --health-cmd="mysqladmin ping"
+     --health-interval:10s
+     --health-timeout=10s
+     --health-retries=10
+
+    steps:
+    - uses: action/checkout@v2
+    - name: Build the Docker image
+     run: docker-compose up -d
+
+    - name: Run tests
+     run:
