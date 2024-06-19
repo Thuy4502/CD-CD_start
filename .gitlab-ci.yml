@@ -1,29 +1,37 @@
-image: docker:latest
+image: gitlab/dind
 
 services:
   - docker:dind
 
 variables:
+  IMAGE_NAME_WORDPRESS: tranthithuy/wordpress
+  DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
 
 stages:
-  - build
-  - deploy
+  # - build
+  - docker
 
-before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-
-build:
-  stage: build
+docker-build:
+  stage: docker
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:latest .
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker login -u $USERNAME_DOCKER -p $PASSWORD_DOCKER
+    - docker build -t $IMAGE_NAME_WORDPRESS:last .
+    - docker push $IMAGE_NAME_WORDPRESS:last
 
-deploy:
-  stage: deploy
-  script:
-    - docker pull $CI_REGISTRY_IMAGE:latest
-    - docker-compose -f docker-compose.yml up -d
-  only:
-    - master
+# before_script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+# build:
+#   stage: build
+#   script:
+#     - docker build -t $CI_REGISTRY_IMAGE:latest .
+#     - docker push $CI_REGISTRY_IMAGE:latest
+
+# deploy:
+#   stage: deploy
+#   script:
+#     - docker pull $CI_REGISTRY_IMAGE:latest
+#     - docker-compose -f docker-compose.yml up -d
+#   only:
+#     - master
