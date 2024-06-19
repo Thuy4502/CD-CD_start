@@ -38,8 +38,8 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build the Docker image
-      run: docker-compose up -my-custom-wordpress
+    # - name: Build the Docker image
+    #   run: docker-compose up -my-custom-wordpress
 
     - name: Run tests
       run: |
@@ -47,7 +47,7 @@ jobs:
 
     - name: Push Docker images
       run: |
-        docker tag my-custom-wordpress:latest ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/my-custom-wordpress:latest
 
     - name: Deploy to Production
